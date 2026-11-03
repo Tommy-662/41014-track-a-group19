@@ -1,0 +1,9 @@
+* text=auto eol=lf
+# Preserve exact simulator bytes because result JSONs record their SHA-256.
+run_sim.py -text
+track_a_scene.xml -text
+landmark_map.json -text
+*.png binary
+*.mp4 binary
+*.csv -text
+*.bat -text

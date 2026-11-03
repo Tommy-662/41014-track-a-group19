@@ -1,0 +1,235 @@
+[
+  {
+    "name": "nominal_s7",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "7",
+      "--seconds",
+      "240",
+      "--output",
+      "results/nominal_s7",
+      "--video"
+    ],
+    "returncode": 0,
+    "wall_seconds": 40.48241686820984
+  },
+  {
+    "name": "nominal_s11",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "11",
+      "--seconds",
+      "240",
+      "--output",
+      "results/nominal_s11"
+    ],
+    "returncode": 0,
+    "wall_seconds": 35.2284095287323
+  },
+  {
+    "name": "nominal_s23",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "23",
+      "--seconds",
+      "240",
+      "--output",
+      "results/nominal_s23"
+    ],
+    "returncode": 0,
+    "wall_seconds": 33.315741300582886
+  },
+  {
+    "name": "dropout40_s7",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "7",
+      "--seconds",
+      "240",
+      "--output",
+      "results/dropout40_s7",
+      "--dropout",
+      ".4",
+      "--video"
+    ],
+    "returncode": 0,
+    "wall_seconds": 38.72759437561035
+  },
+  {
+    "name": "dropout40_s11",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "11",
+      "--seconds",
+      "240",
+      "--output",
+      "results/dropout40_s11",
+      "--dropout",
+      ".4"
+    ],
+    "returncode": 0,
+    "wall_seconds": 30.502583742141724
+  },
+  {
+    "name": "dropout40_s23",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "23",
+      "--seconds",
+      "240",
+      "--output",
+      "results/dropout40_s23",
+      "--dropout",
+      ".4"
+    ],
+    "returncode": 0,
+    "wall_seconds": 29.445223331451416
+  },
+  {
+    "name": "blackout20to26_s7",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "7",
+      "--seconds",
+      "240",
+      "--output",
+      "results/blackout20to26_s7",
+      "--blackout",
+      "20",
+      "26"
+    ],
+    "returncode": 0,
+    "wall_seconds": 29.120670557022095
+  },
+  {
+    "name": "blackout20to26_s11",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "11",
+      "--seconds",
+      "240",
+      "--output",
+      "results/blackout20to26_s11",
+      "--blackout",
+      "20",
+      "26"
+    ],
+    "returncode": 0,
+    "wall_seconds": 29.08064579963684
+  },
+  {
+    "name": "blackout20to26_s23",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "23",
+      "--seconds",
+      "240",
+      "--output",
+      "results/blackout20to26_s23",
+      "--blackout",
+      "20",
+      "26"
+    ],
+    "returncode": 0,
+    "wall_seconds": 29.65272355079651
+  },
+  {
+    "name": "encoder_plus2pct_s7",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "7",
+      "--seconds",
+      "240",
+      "--output",
+      "results/encoder_plus2pct_s7",
+      "--encoder-scale",
+      "1.02"
+    ],
+    "returncode": 0,
+    "wall_seconds": 30.599103212356567
+  },
+  {
+    "name": "encoder_plus2pct_s11",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "11",
+      "--seconds",
+      "240",
+      "--output",
+      "results/encoder_plus2pct_s11",
+      "--encoder-scale",
+      "1.02"
+    ],
+    "returncode": 0,
+    "wall_seconds": 32.125670194625854
+  },
+  {
+    "name": "encoder_plus2pct_s23",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "23",
+      "--seconds",
+      "240",
+      "--output",
+      "results/encoder_plus2pct_s23",
+      "--encoder-scale",
+      "1.02"
+    ],
+    "returncode": 0,
+    "wall_seconds": 32.25194191932678
+  },
+  {
+    "name": "vision_loss100_s7",
+    "command": [
+      "C:\\Users\\T\\IntegratedProject\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\T\\Documents\\Codex\\2026-10-30\\41014-sensors-and-control-in-mechatronics\\outputs\\track-a-project\\run_sim.py",
+      "--headless",
+      "--seed",
+      "7",
+      "--seconds",
+      "50",
+      "--output",
+      "results/vision_loss100_s7",
+      "--dropout",
+      "1"
+    ],
+    "returncode": 1,
+    "wall_seconds": 28.7751042842865
+  }
+]

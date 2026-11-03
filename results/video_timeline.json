@@ -1,0 +1,53 @@
+{
+  "frames": 3000,
+  "fps": 10,
+  "duration_s": 300.0,
+  "audio": false,
+  "sections": [
+    {
+      "start": 0.0,
+      "end": 20.0,
+      "label": "scope"
+    },
+    {
+      "start": 20.0,
+      "end": 50.0,
+      "label": "model_and_frames"
+    },
+    {
+      "start": 50.0,
+      "end": 75.0,
+      "label": "sensing_and_control"
+    },
+    {
+      "start": 75.0,
+      "end": 135.0,
+      "label": "Nominal trial | seed 7 | full mission"
+    },
+    {
+      "start": 135.0,
+      "end": 195.0,
+      "label": "40% camera-observation dropout | seed 7"
+    },
+    {
+      "start": 195.0,
+      "end": 230.0,
+      "label": "repeated_results"
+    },
+    {
+      "start": 230.0,
+      "end": 255.0,
+      "label": "uncertainty"
+    },
+    {
+      "start": 255.0,
+      "end": 280.0,
+      "label": "failure_and_limits"
+    },
+    {
+      "start": 280.0,
+      "end": 300.0,
+      "label": "contribution_and_reproduction"
+    }
+  ]
+}

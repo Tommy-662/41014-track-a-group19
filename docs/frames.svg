@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 460" role="img" aria-label="World, camera and base frame transformation diagram">
+<defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6" fill="none" stroke="#176a91" stroke-width="1.5"/></marker></defs>
+<rect width="1100" height="460" rx="16" fill="#f0f6f9"/>
+<g font-family="Arial,sans-serif" fill="#163240"><text x="35" y="42" font-size="24" font-weight="bold">Frame chain: known landmark pixels to estimated world pose</text>
+<g fill="white" stroke="#b6cdd8" stroke-width="2"><rect x="35" y="80" width="290" height="170" rx="12"/><rect x="405" y="80" width="290" height="170" rx="12"/><rect x="775" y="80" width="290" height="170" rx="12"/></g>
+<g font-size="22" font-weight="bold"><text x="60" y="115">World W</text><text x="430" y="115">OpenCV camera C</text><text x="800" y="115">Robot base B</text></g>
+<g font-size="17"><text x="60" y="148">x, y: floor; z: up</text><text x="60" y="179">Known ArUco corner map</text><text x="60" y="214">yaw: counterclockwise</text><text x="430" y="148">x: right; y: down; z: forward</text><text x="430" y="179">PnP from detected pixels</text><text x="430" y="214">p_C = R_CW p_W + t_CW</text><text x="800" y="148">x: forward; y: left; z: up</text><text x="800" y="179">p_B = p_BC + R_BC p_C</text><text x="800" y="214">XML camera mount/extrinsic</text></g>
+<g stroke="#176a91" stroke-width="3" marker-end="url(#a)"><path d="M330 165H395"/><path d="M700 165H765"/><path d="M920 260V292H180V260"/></g>
+<text x="330" y="150" font-size="14">PnP</text><text x="704" y="150" font-size="14">mount</text>
+<g font-size="18"><text x="50" y="333">R_WB = R_CW^T R_BC^T</text><text x="425" y="333">p_WC = -R_CW^T t_CW</text><text x="50" y="371">p_WB = p_WC - R_WB p_BC</text><text x="425" y="371">EKF measurement: [p_WB,x, p_WB,y, yaw(R_WB)]</text></g>
+<text x="50" y="423" font-size="17" fill="#526b77">MuJoCo camera looks along local -z. R_BC explicitly converts its rendered pixels to OpenCV axes.</text></g></svg>

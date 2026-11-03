@@ -1,0 +1,359 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Group 19 | Track A | 41014</title><style>
+    *{box-sizing:border-box}body{margin:0;color:#28363e;background:white;font:16px/1.8 Georgia,"Times New Roman",serif}a{color:#185f83}header,main{max-width:1040px;margin:auto;padding:32px 36px}header{border-bottom:2px solid #344b57;padding-bottom:24px}header .meta{font:14px/1.7 Arial,sans-serif;color:#58676e}header h1{font-size:34px;line-height:1.3;max-width:850px;margin:18px 0}header p{margin:10px 0;color:#536169}.linkbar{font:14px/1.7 Arial,sans-serif}nav{padding:12px 20px;text-align:center;border-bottom:1px solid #dbe2e5;font:14px/1.7 Arial,sans-serif}nav a{display:inline-block;margin:3px 12px}section{padding:18px 0 32px;border-bottom:1px solid #dbe2e5;overflow-wrap:anywhere}.section-label{font:13px Arial,sans-serif;color:#62747c;margin:20px 0}h1{font-size:28px;line-height:1.35}h2{font-size:23px;margin-top:35px}h3{font-size:19px}pre{background:#f4f6f7;padding:18px;overflow:auto;font:13px/1.7 Consolas,monospace}code{font-family:Consolas,monospace}img{max-width:100%;height:auto;display:block;margin:24px auto}table{display:block;overflow:auto;border-collapse:collapse;font:14px/1.7 Arial,sans-serif;margin:24px 0}th,td{padding:10px;border:1px solid #ced8dd;text-align:left;vertical-align:top}th{background:#f0f4f6}.notice{border-left:3px solid #b3bec4;background:#f7f8f9;padding:12px 18px;font:14px/1.8 Arial,sans-serif}footer{text-align:center;color:#62737b;font-size:13px;padding:26px}@media(max-width:600px){header,main{padding:22px 18px}header h1{font-size:28px}nav a{margin:3px 8px}body{font-size:16px}}
+    </style></head><body><header><div class="meta">UTS 41014 · Integrated Project · Group 19</div><h1>Visual waypoint navigation and ArUco docking</h1><p>Enqian Tang · 25646922 · Approved solo team · Simulation only</p><div class="linkbar"><a href="https://github.com/Tommy-662/41014-track-a-group19">Code repository</a></div></header><nav><a href="#overview">Overview</a><a href="#design">Model & design</a><a href="#results">Results</a><a href="#discussion">Discussion</a><a href="#contribution">Contribution</a></nav><main><div class="notice">The demonstration video will be linked here after upload.</div><section id="overview"><div class="section-label">Overview</div><h1 id="visual-waypoint-navigation-and-aruco-docking">Visual waypoint navigation and ArUco docking</h1>
+<p>41014 Sensors and Control in Mechatronics Systems<br />
+Group 19 — Enqian Tang, 25646922<br />
+Track A · approved individual group</p>
+<p>This project connects sensing, state estimation and feedback control in a MuJoCo navigation task. A differential-drive robot visits three waypoints, avoids an obstacle and returns to an ArUco-marked charging station. The robot is a simplified TurtleBot3-style model with wheel encoders, a downward camera, a forward camera and a simulated 2D LiDAR.</p>
+<p>Wheel odometry provides frequent motion estimates, but it accumulates error when the wheels slip. I use an EKF to correct that prediction with camera pose measurements from a known marker map. LiDAR supplies the obstacle map for A*, and a local LQR tracker turns the planned path into velocity commands. A separate encoder-based wheel-speed loop applies the motor torques. The controller receives estimated position and heading; simulator pose is reserved for sensor generation, evaluation and display.</p>
+<p>The route uses three waypoints: (1,0) m on the far side of the obstacle, (0,1) m across the room, then (0,0) m at the start, before visual docking. This keeps obstacle avoidance, a change of travel direction and a return leg before docking. The brief does not prescribe four waypoints. The repeated experiments cover nominal operation, random camera-observation loss, a six-second blackout and encoder scale error. The current measurements are reported in the results section; the previous four-waypoint results are not mixed into this version.</p>
+<p>The three-waypoint route completes in 58.29 s on average in nominal trials, including the one-second charging demonstration. Mean localization RMSE is 3.81 mm and mean final docking error is 59.65 mm. These measure estimator accuracy and final stopping position respectively.</p>
+<h2 id="reading-the-project">Reading the project</h2>
+<p><a href="docs/model-and-design.md">Design</a> explains the model, coordinate frames, camera geometry, EKF and controller. <a href="docs/results.md">Results</a> contains the repeated trials, uncertainty plots and measurement-noise sensitivity. <a href="docs/discussion.md">Discussion</a> connects those results to the design choices and remaining weaknesses.</p>
+<p><img alt="Comparison of localization, tracking and docking errors" src="results/comparison.png" /></p>
+<h2 id="install-and-reproduce">Install and reproduce</h2>
+<p>Windows 11 with an OpenGL-capable graphics driver. Tested with Python 3.11.9, MuJoCo 3.15.0, NumPy 2.4.6 and OpenCV contrib 4.11.0.86. A fresh Python 3.12.14 environment was also installed from the submitted lockfile and completed the nominal mission; six regression checks pass on the current version. Rendering is still needed in headless mode; a GPU/display context is required. Linux/macOS installation and rendering have not been verified.</p>
+<p>From the repository root in PowerShell:</p>
+<p>Extract the complete project folder before running it. Opening a Python file directly inside a ZIP creates a temporary location and may select a different Python installation. In VS Code, open the project folder and select its <code>.venv</code> interpreter. The included launch configuration uses that environment for debugging.</p>
+<pre><code class="language-powershell">py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-lock.txt
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe tools\calibrate_validate.py
+.\.venv\Scripts\python.exe run_sim.py --headless --seed 7 --output results/reproduced_nominal --video
+</code></pre>
+<p>Use <code>py -3.12</code> if that is your installed version. GUI demonstration:</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe run_sim.py --camera-preview
+</code></pre>
+<p>After installing the environment, <code>START_DEMO.bat</code> launches the same GUI demonstration by double-click. In VS Code, select <strong>Track A simulation</strong> in Run and Debug and press F5.</p>
+<p>Space pauses; R resets; Esc closes the MuJoCo window. After a one-second charging demonstration the GUI holds the completed view until it is closed. Close the viewer to save GUI logs. Headless mode stops after one second of charging or at the chosen time budget; exit 1 means the run did not finish charging or recorded contact. Analysis applies the stricter independent docking-error criteria described in the design document.</p>
+<p>Repeat the complete declared matrix and regenerate figures:</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python.exe tools\run_experiments.py --workers 2
+.\.venv\Scripts\python.exe run_sim.py --headless --seed 7 --r-scale .1 --output results/r01_s7
+.\.venv\Scripts\python.exe run_sim.py --headless --seed 7 --r-scale 10 --output results/r10_s7
+.\.venv\Scripts\python.exe -m pip install -r requirements-analysis.txt
+.\.venv\Scripts\python.exe tools\analyze_results.py
+.\.venv\Scripts\python.exe tools\build_page.py
+</code></pre>
+<p>The complete-vision-loss trial intentionally returns 1 and is preserved as a failure case. Do not delete or relabel it as successful. Rerunning overwrites same-named results; copy the results directory first if you want to preserve this submission's data. PNG plots and the static project page can be viewed without installing analysis packages.</p>
+<h2 id="files">Files</h2>
+<p>The runtime is in <code>run_sim.py</code>. Its classes separate sensor generation, estimation, planning, control, evaluation and recording. <code>track_a_scene.xml</code> defines the physical scene and camera mounts; <code>landmark_map.json</code> supplies the known marker corners; <code>assets/</code> contains the marker textures. The scripts in <code>tools/</code> run the calibration checks, repeated trials and analysis. <code>tests/</code> contains the numerical and feedback-boundary checks. Raw measurements and the parameters used for each trial are kept in <code>results/</code>.</p>
+<h2 id="project-notes">Project notes</h2>
+<p>This is an individual project. My responsibility covers the model, sensing, estimation, control, experiments and demonstration. The <a href="docs/contributions.md">development notes</a> identify the starting files and route revision. The simulation is not a manufacturer-validated robot model, and no hardware result is reported.</p>
+<p>Code is available in the <a href="https://github.com/Tommy-662/41014-track-a-group19">GitHub repository</a>. The video link will be added after upload.</p></section>
+<section id="design"><div class="section-label">Model, frames &amp; design</div><h1 id="model-sensing-estimation-and-control">Model, sensing, estimation and control</h1>
+<h2 id="scope-and-architecture">Scope and architecture</h2>
+<p>The route has three waypoints: (1,0) m beyond the obstacle, (0,1) m across the room, and (0,0) m at the start. After the return, the robot approaches the charging station and shows one second of simulated charging. This gives an outward detour, a cross-room leg and a return for estimated-state tracking.</p>
+<p>Track A, simulation only. The MJCF is a simplified TurtleBot3-style differential-drive robot, not a manufacturer-validated TurtleBot3 dynamic model. Radius 0.05 m and track 0.21 m come from this submitted scene. A caster, wheel-ground contact and motor torque are simulated by MuJoCo. The task is three position waypoints, obstacle detour, and visual alignment with a virtual charging connector. There is no physical electrical contact sensor and no hardware result.</p>
+<pre><code>world W --known landmark corners--&gt; rendered onboard RGB pixels
+                    |                    |
+wheel joint increments -&gt; odometry -&gt; EKF &lt;- ArUco / PnP / rigid transforms
+                                      |
+LiDAR ranges -&gt; grid + A* &lt;------- estimated world pose
+                     |                |
+                     +--&gt; local target + LQR / turn mode -&gt; wheel targets
+noisy encoder wheel speed -----------------&gt; torque inner loop -&gt; physics
+front ArUco relative station -&gt; estimated dock position -&gt; docking supervisor
+
+physics truth ----&gt; Evaluator / CSV / plots / video ONLY
+</code></pre>
+<p>SensorSimulator accesses MuJoCo geometry to synthesise sensor measurements. This is the simulator sensor boundary, not a pose observation passed directly to the controller. The controller receives only the estimated planar pose and a target; the torque loop receives noisy quantised encoder increments. Evaluation code in Demo.tick/close reads truth to log metrics after commands have already been selected, and never writes that truth into estimation, planning or control. The overhead camera is presentation only.</p>
+<h2 id="coordinates-and-transforms">Coordinates and transforms</h2>
+<p><img alt="World-camera-base frame transformations" src="docs/frames.svg" /></p>
+<p>World W: x and y lie in the floor, z is up; SI metres, seconds, radians. Base B: x forward, y left, z up; yaw is counterclockwise about z. The base origin is the chassis freejoint origin. Wheel centres are 0.045 m forward of that origin, so treating its motion as an ideal axle-centre unicycle is an approximation. Camera C uses OpenCV x right, y down, z forward; MuJoCo camera optical direction is its negative local z, requiring the explicit conversion below.</p>
+<p>R_BC maps OpenCV camera vectors into base coordinates; p_BC is the camera optical centre in base coordinates:</p>
+<table>
+<thead>
+<tr>
+<th>Camera</th>
+<th>p_BC [m]</th>
+<th>R_BC</th>
+<th>image / FOV</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>downward</td>
+<td>[0.14,0,0.60]</td>
+<td>diag(1,-1,-1)</td>
+<td>480x480, vertical 90 deg</td>
+</tr>
+<tr>
+<td>forward</td>
+<td>[-0.04,0,0.22]</td>
+<td>[[0,0,1],[-1,0,0],[0,-1,0]]</td>
+<td>480x480, vertical 65 deg</td>
+</tr>
+</tbody>
+</table>
+<p>PnP returns p_C = R_CW p_W + t_CW. Then R_WB = R_CW^T R_BC^T; p_WC = -R_CW^T t_CW; p_WB = p_WC - R_WB p_BC. Yaw = atan2(R_WB[1,0], R_WB[0,0]). A station point is measured as p_BS = p_BC + R_BC (R_CW p_WS + t_CW), then mapped into W using the EKF pose. Thus docking position originates in pixels and EKF pose. The station's known orientation sets desired heading pi; its true scene location is used only for evaluation.</p>
+<p>Marker dictionary DICT_4X4_50. Floor marker black-square side = 0.14<em>200/270 = 0.103704 m; station black-square side = 0.30</em>200/270 = 0.222222 m. The image's white border must not be counted as black-square size. Ordered world corners are in landmark_map.json. This is localization against a known map, not SLAM.</p>
+<h2 id="motion-model-and-local-analysis">Motion model and local analysis</h2>
+<p>State x=[p_x,p_y,psi]^T, velocity input u=[v,omega]^T. Continuous model:</p>
+<pre><code>p_x_dot = v cos(psi), p_y_dot = v sin(psi), psi_dot = omega.
+v = r(w_R+w_L)/2, omega = r(w_R-w_L)/b.
+</code></pre>
+<p>At each 0.02 s controller step (physics 0.002 s, ten substeps), encoders supply wheel travel d_L,d_R. With d_s=(d_L+d_R)/2, d_a=(d_R-d_L)/b, a=psi+d_a/2:</p>
+<pre><code>f(x,d) = [p_x+d_s cos(a), p_y+d_s sin(a), wrap(psi+d_a)].
+F = [[1,0,-d_s sin(a)],[0,1,d_s cos(a)],[0,0,1]].
+</code></pre>
+<p>No-slip planar kinematics, fixed wheel geometry, negligible roll/pitch in estimator, and a known initial pose are assumptions, not universal truths. Physics includes slip that this model omits.</p>
+<p>The tracking error is reference minus robot expressed in a locally fixed reference frame: [along,cross,heading]. At reference speed 0.12 m/s and sample T=0.02 s:</p>
+<pre><code>A = [[1,0,0],[0,1,0.12*T],[0,0,1]]
+B = [[-T,0],[0,0],[0,-T]].
+</code></pre>
+<p>The controllability matrix [B,AB,A^2 B] has rank 3 for nonzero reference speed. At zero speed the lateral row decouples and rank is 2; a stationary linearization cannot instantaneously correct lateral error. Turn-in-place and waypoint mode switching address large heading errors, outside the LQR's local assumptions. Stability of A-BK establishes only local unsaturated linear stability; it is not a proof for A*, mode switches, slip, saturation or the entire mission.</p>
+<p>Camera pose observation z=x+noise has H=I_3, giving local observability rank 3 wherever PnP is valid. Encoders alone give relative increments and cannot identify arbitrary initial global translation/yaw. During camera loss, EKF propagates with increasing covariance; restoring a valid observation restores absolute correction. LiDAR builds an obstacle map but is not fused as a localization observation in this version. Camera pose observability depends on known nondegenerate marker geometry and successful association, not solely on writing H=I.</p>
+<h2 id="camera-calibration-and-sensor-noise">Camera calibration and sensor noise</h2>
+<p>Analytic intrinsic calibration: f_x=f_y=240/tan(FOV_y/2), c_x=c_y=239.5 pixels. Thus downward f=240 px; forward f approximately 376.7245 px. Lens distortion is zero by renderer construction. Extrinsics come from the XML mounts and OpenCV-to-MuJoCo frame conversion. This is not a fitted real-camera calibration. <code>tools/calibrate_validate.py</code> independently samples 28 held-out pose/heading combinations and reports detection availability, base pose errors, station-relative errors and reprojection residuals. All errors use truth only in this validation harness. The exact generated evidence is in <code>results/calibration_validation.json</code>.</p>
+<p>Noise: image Gaussian sigma=1 intensity unit per RGB channel, clipping to uint8; encoder quantisation 4096 counts/revolution plus travel noise sigma=15 micrometres per sample; LiDAR 120 rays over 360 degrees, max range 3 m, sigma=3 mm, sampled 5 Hz. Sensor noise uses a seeded generator. Range clipping and quantisation mean these distributions are not perfectly Gaussian.</p>
+<p>Multi-marker PnP uses RANSAC: 100 iterations, 2.5 px threshold, at least eight inlier corners, followed by iterative refinement. Single marker uses planar IPPE. Poses with reprojection RMS &gt;2 px or base height outside (0.02,0.18) m are discarded. Residual is sqrt(mean of squared pixel-coordinate errors), not RMS Euclidean 2D corner distance. The reported mean is over accepted poses; it omits failed detections. Detection quality, geometry and pose error are separate metrics. Long-range single-marker range is less reliable than nearby multi-marker localization; calibration results quantify this limitation.</p>
+<h2 id="state-estimation">State estimation</h2>
+<p>Initial mean [0,0,0], P0=diag(0.03,0.03,0.08)^2. Prediction Q=diag(2e-6,2e-6,8e-6) per 50 Hz step, in m^2,m^2,rad^2. Q is a conservative additive model-error allowance for slip/kinematic mismatch, not a fitted encoder covariance. Position observation R=diag(0.007,0.007,0.025)^2. These standard deviations exceed held-out static image errors to allow dynamic motion/geometry effects. They are chosen engineering allowances; they are not maximum-likelihood estimates from hardware.</p>
+<p>Innovation uses wrapped yaw. S=P+R, squared Mahalanobis gate=25; accepted update K=P S^-1. Joseph covariance update (I-K)P(I-K)^T+KRK^T maintains numerical symmetry/positive covariance. This gate is a fixed design value, not the usual 95% chi-square threshold. Only valid camera poses reset camera age; a rejected valid pose currently resets age too, a limitation under sustained outliers.</p>
+<p>CSV stores estimated position/yaw and 1-sigma values. Evaluation uses the exact same pre-physics time for truth and estimate. Position RMSE=sqrt(mean((xhat-x)^2+(yhat-y)^2)); yaw RMSE uses wrapped angular error. Raw odometry is logged as an estimator comparison using the same wheel increments and no camera correction. NEES=e^T P^-1 e is reported over correlated trajectory samples; its mean is diagnostic, not a formal independent-sample consistency test. Three-dimensional ideal Gaussian NEES has expected value 3, but nonlinearity, gating, correlation and model mismatch matter.</p>
+<h2 id="path-planning-and-feedback-control">Path planning and feedback control</h2>
+<p>Discrete LQR solves the algebraic Riccati equation iteratively to 1e-9 change, maximum 5000 iterations. Cost Q_LQR=diag(4,14,4), R_LQR=diag(2,1.5). These are cost weights, unrelated to EKF noise Q/R. Cross-track weight 14 prioritises lateral path adherence; input weights limit aggressive corrections. Run <code>tools/analyze_results.py</code> for the actual gain, poles, rank and numerical residual.</p>
+<p>u=[0.12,0]-K e (slow docking feedforward 0.06). Limits: v 0..0.16 m/s (docking 0..0.10), omega +/-1 rad/s, distance-dependent speed cap 0.8<em>distance, angular cosine scaling. For point bearing error &gt;0.75 rad, turn-in-place at clip(2.2</em>error,+/-1). Wheels are limited +/-6 rad/s. Torque command = clip(0.15*(target wheel velocity - measured encoder wheel velocity),+/-0.20) N m, held over ten physics steps. No qvel feedback is used. Saturation and hybrid logic mean the implemented tracker is not a pure unconstrained LQR.</p>
+<p>LiDAR grid 0.07 m, dimensions 35x33, origin [-0.7,-0.6]. Hit/free evidence is accumulated with bounded scores; cells with score &gt;=2 occupied. A* uses 8-neighbour connectivity, no diagonal corner cutting. Inflation 0.245 m (0.17 m docking), replan every 0.5 s, lookahead 0.18 m. Unknown cells are not conservatively blocked: this is not a certified exploration planner. A forward ray cone +/-0.35 rad brakes translation below 0.24 m. Sensor origin and chassis clearance differ: minimum LiDAR range is not minimum body-surface clearance.</p>
+<p>Waypoints [1,0],[0,1],[0,0] m use 0.075 m estimated arrival tolerance and 0.6 s hold. Stop errors in results are actual truth distance at the estimated arrival event. Dock goal = measured world station position+[0.20,0]; translation tolerance 0.06 m (alignment retains mode to 0.08 m); heading entry &lt;0.07 rad. Charge supervisor requires position &lt;=0.09 m, heading &lt;=0.12 rad and station freshness &lt;=2 s. Entry requires pose age &lt;0.4 s and station age &lt;0.6 s. A BLOCKED docking plan with a station observation older than 2 s clears that target and reacquires the marker before trying again. The relaxed retention threshold explains final heading/position being larger than entry limits. The result is alignment with a virtual connector, rather than a physical contact-docking test.</p>
+<p>Virtual electrical model: 2.2 Ah, OCV=10.8+1.8*SOC, battery resistance 0.25 ohm, external equivalent 0.75 ohm, first-order RC transient 20 s, current capped 1 A, electrical time accelerated 60x. SOC can end below its initial value despite charging because the preceding mission consumes energy. One second of positive charging current is demonstrated; physical energy delivery is not.</p>
+<h2 id="evaluation-method">Evaluation method</h2>
+<p><code>tools/run_experiments.py</code> declares seeds 7,11,23 under nominal, 40% independent camera-pose dropout, 20..26 s complete vision blackout, and +2% encoder travel scale. The rendering still occurs during dropout; this tests missing observations, not realistic occlusion/illumination image degradation. Encoder scale tests wheel-distance calibration mismatch, not an externally applied force. A separate 100% vision-loss trial demonstrates a boundary failure. Small seeded trials in one scene do not establish real-world reliability. The complete-loss run is retained alongside the successful trials to show where this approach stops working.</p>
+<p>Tracking RMSE is perpendicular distance from evaluation truth to the current A* polyline during tracking modes. It is spatial path following, not error to a timed trajectory; replanning changes the reference and can make it optimistic. Torque-squared integral (N^2 m^2 s) is a control-effort proxy, not energy. Contact count is contact samples, not unique collision events. Success requires all three waypoints, CHARGING with &gt;=1 s positive charge, zero obstacle/wall/charger contacts, actual docking error &lt;=0.09 m and heading &lt;=0.12 rad. Simulator failure exits and nonzero statuses remain in stdout.</p></section>
+<section id="results"><div class="section-label">Quantitative results</div><h1 id="repeated-trial-results">Repeated-trial results</h1>
+<p>Fresh runs from the submitted source; 3 seeds per condition. Mean +/- sample SD. Completion time includes a one-second charging demonstration.</p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th style="text-align: right;">success</th>
+<th style="text-align: right;">localization RMSE mm</th>
+<th style="text-align: right;">path RMSE mm</th>
+<th style="text-align: right;">dock error mm</th>
+<th style="text-align: right;">time s</th>
+<th style="text-align: right;">mean NEES</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nominal</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">3.81 +/- 0.03</td>
+<td style="text-align: right;">25.08 +/- 0.85</td>
+<td style="text-align: right;">59.65 +/- 0.34</td>
+<td style="text-align: right;">58.29 +/- 0.12</td>
+<td style="text-align: right;">2.92 +/- 0.02</td>
+</tr>
+<tr>
+<td>dropout40</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">6.32 +/- 0.44</td>
+<td style="text-align: right;">24.00 +/- 1.97</td>
+<td style="text-align: right;">62.02 +/- 1.91</td>
+<td style="text-align: right;">58.61 +/- 0.32</td>
+<td style="text-align: right;">3.77 +/- 0.09</td>
+</tr>
+<tr>
+<td>blackout20to26</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">7.86 +/- 0.02</td>
+<td style="text-align: right;">25.07 +/- 0.55</td>
+<td style="text-align: right;">59.78 +/- 0.11</td>
+<td style="text-align: right;">58.23 +/- 0.12</td>
+<td style="text-align: right;">3.16 +/- 0.04</td>
+</tr>
+<tr>
+<td>encoder_plus2pct</td>
+<td style="text-align: right;">3/3</td>
+<td style="text-align: right;">4.00 +/- 0.01</td>
+<td style="text-align: right;">23.69 +/- 0.72</td>
+<td style="text-align: right;">59.61 +/- 0.51</td>
+<td style="text-align: right;">59.01 +/- 0.09</td>
+<td style="text-align: right;">3.61 +/- 0.06</td>
+</tr>
+</tbody>
+</table>
+<p>Each 3/3 rate has a 95% Wilson interval approximately [0.44,1.00]; trials are few and share one scene. Zero contact samples were observed in successful trials. Path RMSE uses the changing planned polyline, so it is not a timed trajectory metric. Localization RMSE is not final docking error.</p>
+<p><img alt="Trajectory, error, uncertainty and NEES" src="results/evaluation.png" /></p>
+<p><img alt="Repeated-trial comparison" src="results/comparison.png" /></p>
+<h2 id="trial-detail">Trial detail</h2>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th style="text-align: right;">seed</th>
+<th style="text-align: right;">odom RMSE m</th>
+<th style="text-align: right;">yaw RMSE rad</th>
+<th style="text-align: right;">dock yaw rad</th>
+<th style="text-align: right;">torque effort N^2 m^2 s</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nominal</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.4195</td>
+<td style="text-align: right;">0.0240</td>
+<td style="text-align: right;">0.0821</td>
+<td style="text-align: right;">1.1716</td>
+</tr>
+<tr>
+<td>nominal</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0.4230</td>
+<td style="text-align: right;">0.0238</td>
+<td style="text-align: right;">0.0817</td>
+<td style="text-align: right;">1.1803</td>
+</tr>
+<tr>
+<td>nominal</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0.4235</td>
+<td style="text-align: right;">0.0239</td>
+<td style="text-align: right;">0.0811</td>
+<td style="text-align: right;">1.1816</td>
+</tr>
+<tr>
+<td>dropout40</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.4326</td>
+<td style="text-align: right;">0.0335</td>
+<td style="text-align: right;">0.0841</td>
+<td style="text-align: right;">1.1989</td>
+</tr>
+<tr>
+<td>dropout40</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0.4201</td>
+<td style="text-align: right;">0.0309</td>
+<td style="text-align: right;">0.0822</td>
+<td style="text-align: right;">1.2038</td>
+</tr>
+<tr>
+<td>dropout40</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0.4388</td>
+<td style="text-align: right;">0.0323</td>
+<td style="text-align: right;">0.0841</td>
+<td style="text-align: right;">1.1797</td>
+</tr>
+<tr>
+<td>blackout20to26</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.4137</td>
+<td style="text-align: right;">0.0306</td>
+<td style="text-align: right;">0.0809</td>
+<td style="text-align: right;">1.1722</td>
+</tr>
+<tr>
+<td>blackout20to26</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0.4180</td>
+<td style="text-align: right;">0.0308</td>
+<td style="text-align: right;">0.0804</td>
+<td style="text-align: right;">1.1730</td>
+</tr>
+<tr>
+<td>blackout20to26</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0.4197</td>
+<td style="text-align: right;">0.0313</td>
+<td style="text-align: right;">0.0799</td>
+<td style="text-align: right;">1.1827</td>
+</tr>
+<tr>
+<td>encoder_plus2pct</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.5115</td>
+<td style="text-align: right;">0.0266</td>
+<td style="text-align: right;">0.0824</td>
+<td style="text-align: right;">1.1744</td>
+</tr>
+<tr>
+<td>encoder_plus2pct</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0.5148</td>
+<td style="text-align: right;">0.0268</td>
+<td style="text-align: right;">0.0815</td>
+<td style="text-align: right;">1.1764</td>
+</tr>
+<tr>
+<td>encoder_plus2pct</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0.5142</td>
+<td style="text-align: right;">0.0271</td>
+<td style="text-align: right;">0.0815</td>
+<td style="text-align: right;">1.1875</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sensor-validation">Sensor validation</h2>
+<p>28 held-out poses: 28/28 base-pose detections; 8/28 station-relative detections. Base position RMSE 0.611 mm; yaw RMSE 0.000529 rad. Station-relative RMSE over detected cases 29.15 mm; max 78.60 mm. The three near-dock front-facing samples have station-relative RMSE 2.22 mm. Long-range oblique planar PnP depth is less constrained despite low pixel residual. Missing station detections are expected when facing away and are retained in raw results.</p>
+<h2 id="failure-boundary">Failure boundary</h2>
+<p>100% camera observation loss, seed 7, 50 s evaluation budget: stage SEARCH DOCK, estimated waypoint counter 3/3 (not independently verified true arrivals), position RMSE 0.274 m, 0 contact samples. The run is a failed mission and is not included in the 12-trial success denominator. Without camera measurements, no visual station estimate is available, so the visual-docking requirement cannot be completed; odometry also accumulates slip error. This run does not claim a 240 s timeout test.</p>
+<h2 id="ekf-measurement-noise-sensitivity-one-seed-exploratory">EKF measurement-noise sensitivity (one seed, exploratory)</h2>
+<table>
+<thead>
+<tr>
+<th>R multiplier</th>
+<th style="text-align: right;">localization RMSE mm</th>
+<th style="text-align: right;">mean NEES</th>
+<th style="text-align: right;">path RMSE mm</th>
+<th style="text-align: right;">torque effort</th>
+<th>success</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.1</td>
+<td style="text-align: right;">1.745</td>
+<td style="text-align: right;">1.222</td>
+<td style="text-align: right;">25.069</td>
+<td style="text-align: right;">1.182</td>
+<td>True</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td style="text-align: right;">3.777</td>
+<td style="text-align: right;">2.941</td>
+<td style="text-align: right;">24.110</td>
+<td style="text-align: right;">1.172</td>
+<td>True</td>
+</tr>
+<tr>
+<td>10.0</td>
+<td style="text-align: right;">11.831</td>
+<td style="text-align: right;">5.964</td>
+<td style="text-align: right;">25.814</td>
+<td style="text-align: right;">1.244</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+<p>The table compares measurement weighting, actual error and reported uncertainty on one seed. It is a sensitivity probe, not a statistically established optimum. The common baseline is retained across the repeated trials. Smaller R gives camera observations more weight; the resulting NEES depends on both actual error and posterior covariance.</p>
+<p>For the interpretation of these trials and the limitations of the metrics, see <a href="docs/discussion.md">Discussion</a>.</p></section>
+<section id="discussion"><div class="section-label">Discussion</div><h1 id="results-and-limitations">Results and limitations</h1>
+<p>The route has three waypoints, (1,0), (0,1) and (0,0) m, followed by visual docking. The outward leg requires a LiDAR detour around the obstacle. The second leg crosses the room; the third returns to the start before the forward-camera docking approach. A four-corner room circuit is unnecessary for these checks.</p>
+<p>The three-waypoint route completes in 58.29 s on average in nominal trials, including the one-second charging demonstration. Mean localization RMSE is 3.81 mm and mean final docking error is 59.65 mm. These measure estimator accuracy and final stopping position respectively.</p>
+<p>Each of the four conditions uses three seeds. The recorded success counts are nominal: 3/3, dropout40: 3/3, blackout20to26: 3/3, encoder_plus2pct: 3/3. Mean localization RMSE is 6.32 mm under 40% random observation loss, 7.86 mm under a six-second blackout, and 4.00 mm with +2% encoder scale error. All reported results belong to the three-waypoint runtime and scene.</p>
+<p>Continuous blackout leaves a longer interval of encoder-only prediction than scattered observation gaps. The uncertainty band expands during that interval and contracts after a usable observation returns. LiDAR continues mapping obstacles; it is not a substitute absolute-pose observation in this EKF.</p>
+<p>Shortening the route exposed a case where an old station observation led to a blocked docking plan. If a docking plan is BLOCKED and the station measurement is older than two seconds, the robot now clears that target and searches for a new observation. It does not discard the target merely because an otherwise valid approach takes more than two seconds. This distinction avoids unnecessary repeated searches. A regression test covers the blocked/stale-target case.</p>
+<p>Docking error is much larger than localization error because translation stops near the 60 mm arrival threshold before heading alignment. Connection retention uses wider position and angle thresholds. This is a virtual connector, not a physical contact experiment. The equivalent circuit is a small additional simulation of charge current and SOC, not evidence of a hardware charger.</p>
+<p>With complete camera-observation loss, the run ends in SEARCH DOCK after 50.0 s, with 3/3 estimated waypoint arrivals and 0.274 m localization RMSE. It is a failed mission. Estimated arrival counts do not independently prove true arrival, and no visual station target is available. This separate failure case is not added to the denominator of the repeated-condition trials.</p>
+<p>In the seed-7 sensitivity check, R x0.1 gives 1.74 mm localization RMSE, compared with 3.78 mm at the common baseline and 11.83 mm at R x10. The noise settings are engineering allowances, not a fitted physical noise model. One sensitivity seed does not establish an optimum.</p>
+<p>Other limits remain. Static camera-pose validation has small base-position errors, but the accepted station-relative depth error reaches about 79 mm at distant oblique views. Current-path RMSE uses a path that changes when A* replans. Unknown grid cells are treated optimistically. A valid PnP pose resets camera age even when the EKF rejects that pose; accepted-update freshness would be a useful further check. The small trial count and one static room do not establish general reliability.</p></section>
+<section id="contribution"><div class="section-label">Individual contribution</div><h1 id="contribution-and-implementation-notes">Contribution and implementation notes</h1>
+<p>Group 19 consists of Enqian Tang (25646922). Teaching staff approved the individual group. The project covers the complete simulation, from the motion model and camera frames to estimation, control and evaluation.</p>
+<h2 id="starting-point-and-corrections">Starting point and corrections</h2>
+<p>The working files came from the existing IntegratedProject directory. On 3 November the route was set to three waypoints, with the unused scene markers removed. The repeated experiments and video were regenerated for that route. Earlier four-waypoint results are archived outside the submitted project.</p>
+<p>Two corrections matter for interpreting the results. First, the motor loop now estimates wheel velocity from quantised encoder increments instead of reading simulator joint velocity. This keeps both feedback loops on measured or estimated quantities. Second, position error is sampled before the physics step, at the same instant as the state estimate. Comparing that estimate with the next physics state would include movement during the step in the reported localization error.</p>
+<p>The evaluation scripts add final docking error against the scene reference, heading error, covariance diagnostics, path-following error and a torque-effort measure. The marker validation uses 28 separate poses. Repeated experiments cover observation loss and wheel-distance calibration error, with a complete-loss case retained as a failure.</p>
+<p>The implementation combines standard differential-drive kinematics, EKF, A*, LQR and ArUco/PnP. The references below describe the simulator and camera-pose interfaces used in the project.</p>
+<h2 id="references">References</h2>
+<ul>
+<li>UTS 41014 Integrated Project v2 marking guide, Canvas file 14048181. The copy checked on 30 October matched the supplied brief byte for byte.</li>
+<li><a href="https://mujoco.readthedocs.io/en/stable/python.html">MuJoCo Python interface</a>.</li>
+<li><a href="https://docs.opencv.org/4.x/d5/d1f/calib3d_solvePnP.html">OpenCV PnP coordinate convention and pose solvers</a>. The runtime is pinned to OpenCV 4.11.</li>
+<li><a href="https://docs.github.com/en/pages/quickstart">GitHub Pages publishing instructions</a>.</li>
+</ul>
+<p>The shorter return route exposed a stale visual station target in a blocked plan. The docking logic now reacquires such a target, and the search command is 0.8 rad/s to avoid prolonged low-speed rotation. The new regression check verifies stale-target recovery without ground-truth feedback.</p></section></main><footer>Three-waypoint validation: 3 November 2026 · No hardware claim · Raw logs and source hashes included</footer></body></html>

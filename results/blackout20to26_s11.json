@@ -1,0 +1,130 @@
+{
+  "charge_demo_seconds": 1.0,
+  "stage": "CHARGING",
+  "waypoints": 3,
+  "waypoint_count": 3,
+  "waypoint_goals": [
+    [
+      1.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      0.0
+    ]
+  ],
+  "time": 58.300000000025285,
+  "camera_updates": 262,
+  "camera_rejected": 0,
+  "dock_detections": 70,
+  "rmse_m": 0.00786751896438141,
+  "max_error_m": 0.03434619060122326,
+  "obstacle_contacts": 0,
+  "min_lidar_m": 0.20781003563498754,
+  "lidar_brakes": 0,
+  "seed": 11,
+  "dropout": 0,
+  "estimated_pose": [
+    -0.44090386665035447,
+    -0.018280594015190454,
+    3.062988009140801
+  ],
+  "truth_xy_evaluation_only": [
+    -0.44093084395331417,
+    -0.018146863129647865
+  ],
+  "ekf_covariance": [
+    [
+      3.086335345058043e-05,
+      3.4299329501609793e-15,
+      1.176590811961673e-10
+    ],
+    [
+      3.429932950160982e-15,
+      3.0863353493853986e-05,
+      1.4307499675548704e-09
+    ],
+    [
+      1.176590811961673e-10,
+      1.4307499675548695e-09,
+      0.0002191563319838813
+    ]
+  ],
+  "dock_position_error_m": 0.05981345838103046,
+  "dock_heading_error_rad": 0.07860464444899229,
+  "onboard_down_poses": 292,
+  "onboard_front_station_detections": 70,
+  "reprojection_rmse_px": 0.700777991943429,
+  "lqr_calls": 2103,
+  "lqr_closed_loop_eigenvalues": [
+    0.9681751943104389,
+    0.995476377869,
+    0.9721129004668206
+  ],
+  "battery_connected": true,
+  "battery_soc": 0.3259461687321195,
+  "battery_voltage": 11.778937370098777,
+  "battery_current": 1.0,
+  "charged_ah": 0.016666666666666663,
+  "charge_seconds": 1.0000000000000004,
+  "dock_reference": [
+    -0.698148316497041,
+    -0.0009392340555606023
+  ],
+  "dock_truth_error_m": 0.05988486631301054,
+  "dock_truth_heading_error_rad": 0.08037530490276446,
+  "odometry_rmse_m": 0.41795510565676447,
+  "yaw_rmse_rad": 0.03077445975525674,
+  "path_tracking_rmse_m": 0.02451125099787966,
+  "mean_nees": 3.144104223921719,
+  "effort_torque_squared_integral": 1.1730488893408315,
+  "waypoint_events": [
+    {
+      "index": 1,
+      "time": 13.920000000001318,
+      "goal": [
+        1.0,
+        0.0
+      ],
+      "truth_error_m": 0.07627692753058932
+    },
+    {
+      "index": 2,
+      "time": 30.73999999999384,
+      "goal": [
+        0.0,
+        1.0
+      ],
+      "truth_error_m": 0.07603024460742304
+    },
+    {
+      "index": 3,
+      "time": 42.66000000000617,
+      "goal": [
+        0.0,
+        0.0
+      ],
+      "truth_error_m": 0.07602660160201583
+    }
+  ],
+  "encoder_scale": 1.0,
+  "blackout": [
+    20.0,
+    26.0
+  ],
+  "r_scale": 1.0,
+  "timestamp_utc": "2026-11-03T03:29:29.073806+00:00",
+  "python": "3.11.9",
+  "mujoco": "3.15.0",
+  "opencv": "4.11.0",
+  "numpy": "2.4.6",
+  "source_sha256": {
+    "run_sim.py": "b14347e7f60c70f2138077ada78711db20edf1c48e72524340644e5918cbf21d",
+    "track_a_scene.xml": "30156eda35bb240ba77a984d56f2f96202da5103deb82968ea6e88274ad1a971",
+    "landmark_map.json": "d5984b622ac3d381740330e027a4c001315fbf962aad831b8411b1e75f15cd11"
+  }
+}

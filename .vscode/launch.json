@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Track A simulation",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/run_sim.py",
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "args": ["--camera-preview", "--output", "results/local_gui"]
+    }
+  ]
+}

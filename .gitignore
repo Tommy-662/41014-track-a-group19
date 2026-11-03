@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+MUJOCO_LOG.TXT
+results/*_demo.mp4
+*.zip
+submission_links.json

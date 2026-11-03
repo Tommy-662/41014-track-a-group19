@@ -1,0 +1,4 @@
+-r requirements-lock.txt
+matplotlib==3.11.2
+Markdown==3.11.2
+Pillow==13.0.0
