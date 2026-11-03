@@ -69,4 +69,4 @@ The runtime is in `run_sim.py`. Its classes separate sensor generation, estimati
 
 This is an individual project. My responsibility covers the model, sensing, estimation, control, experiments and demonstration. The [development notes](docs/contributions.md) identify the starting files and route revision. The simulation is not a manufacturer-validated robot model, and no hardware result is reported.
 
-Code is available in the [GitHub repository](https://github.com/Tommy-662/41014-track-a-group19). The video link will be added after upload.
+Code is available in the [GitHub repository](https://github.com/Tommy-662/41014-track-a-group19). Watch the [five-minute demonstration](https://youtu.be/7SyLCQ77BmU) for the nominal run, camera-observation dropout trial and quantitative results.
