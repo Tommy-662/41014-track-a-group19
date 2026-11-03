@@ -15,10 +15,7 @@ def main():
 41014 Integrated Project - Track A
 Group 19: Enqian Tang (25646922), approved single-student group.
 Project page: {a.page}
-Code repository: {a.repository}
-Five-minute demonstration video: {a.video}
-
-Simulation-only submission: onboard sensing, EKF, estimated-state feedback, visual docking, repeated perturbation trials and uncertainty evaluation.
+The project page contains the demonstration video, code repository and code download, alongside the model, sensing, estimation, controller design and quantitative results.
 '''
     preparation=ROOT.parent/'提交操作'; preparation.mkdir(exist_ok=True)
     (preparation/'Canvas_submission_DRAFT.txt').write_text(text,encoding='utf-8')
